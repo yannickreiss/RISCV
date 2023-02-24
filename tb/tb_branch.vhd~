@@ -1,0 +1,17 @@
+-- tb_branch.vhd
+-- Created on: Fr 24. Feb 15:44:16 CET 2023
+-- Author(s): Yannick Reiß
+-- Content:  Entity tb_branchanch
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.math_real.all;
+
+library work;
+use work.riscv_types.all;
+
+-- Entity branch_tb: testbench for branch
+entity branch_tb is
+end branch_tb;
+
+

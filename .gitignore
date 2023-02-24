@@ -1,0 +1,10 @@
+*.o
+*.ghw
+*.cf
+xvhdl*
+Vivado*
+test-B-type
+.vscode/vhdl.json.code-snippets
+ripestohex.py
+ggt.S
+constrainits.xdc
