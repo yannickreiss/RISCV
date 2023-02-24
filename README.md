@@ -1,4 +1,7 @@
 # RISC-V Prozessor
+## Authors
+This processor is based on the project by Alex Graf, Carl Ries and Yannick Reiß.
+
 ## Requirements
 - make
 - ghdl
