@@ -45,11 +45,11 @@ begin
     begin
         if rising_edge(clk) then
             -- if reset = '1' then
-                -- check if write is enabled
-                if to_integer(unsigned(write_enable)) = 1 then
-                    -- write data_in to wr_idx
-                    registerbench(to_integer(unsigned(wr_idx))) <= data_in;
-                end if;
+            -- check if write is enabled
+            if to_integer(unsigned(write_enable)) = 1 then
+                -- write data_in to wr_idx
+                registerbench(to_integer(unsigned(wr_idx))) <= data_in;
+            end if;
             -- else
             --     registerbench <= initRegs;
             -- end if;
