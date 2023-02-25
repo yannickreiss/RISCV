@@ -17,6 +17,7 @@ architecture Behavioral of cpu_tb is
   signal clk : std_logic;
 
   -- Inputs
+  signal reset : std_logic := '0';
 
   -- Outputs
   -- Clock period definitions
@@ -26,7 +27,8 @@ begin
 
   -- Instantiate the Unit Under Test (UUT)
   uut : entity work.cpu(implementation)
-    port map (clk => clk);
+    port map (clk   => clk,
+              reset => reset);
 
   -- Clock process definitions
   clk_process : process
@@ -43,6 +45,15 @@ begin
   begin
     write(lineBuffer, string'("Start the simulator"));
     writeline(output, lineBuffer);
+
+    wait for 470 ns;
+
+    write(lineBuffer, string'("RESET: Values should be set to zero"));
+    writeline(output, lineBuffer);
+
+    reset <= '1';
+    wait for 10 ns;
+    reset <= '0';
 
     wait;
   end process;

@@ -13,7 +13,7 @@ use work.riscv_types.all;
 entity cpu is
   port(
     clk : in std_logic;                 -- clk to control the unit
-    -- reset : in std_logic;               -- reset pc to zero
+    reset : in std_logic;               -- reset pc to zero
 
     -- Led Output
     led : out std_logic_vector(15 downto 0);  -- output to 16 LEDS
@@ -155,7 +155,6 @@ architecture implementation of cpu is
 
   -- Clock signals
   signal locked : std_logic;
-  signal reset  : std_logic := '0';
 
 -------------------------
 -- additional ALU signals

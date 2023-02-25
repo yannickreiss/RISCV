@@ -57,7 +57,7 @@ decoder:	$(DECSRC)
 cpu:	$(CPUSRC)
 	$(CHDL) -a $(FLAGS) $(CPUSRC)
 	$(CHDL) -e $(FLAGS) cpu_tb
-	$(CHDL) -r $(FLAGS) cpu_tb --wave=cpu.ghw --stop-time=600000ns
+	$(CHDL) -r $(FLAGS) cpu_tb --wave=cpu.ghw --stop-time=400000ns
 
 # imm compilecheck
 imm:	src/imm.vhd
