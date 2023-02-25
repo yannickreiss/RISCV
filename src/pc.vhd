@@ -38,9 +38,9 @@ begin
             addr_out <= addr_out_plus;
         end if;
       end if;
-      if reset = '1' then
-        addr_out <= (others => '0');
-      end if;
+      --  if reset = '1' then
+      --   addr_out <= (others => '0');
+      -- end if;
     end if;
   end process;
   
