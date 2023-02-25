@@ -31,19 +31,18 @@ end instr_memory;
 --     addi x1 x0 1
 --     add  x2 x0 x0
 --     add  x3 x0 x0
---     addi x4 x0 2047
---     slti x4 x4 5
+--     addi x4 x0 2047ä
 -- REG2UP:
 --     add  x2 x2 x1
 --     add  x3 x0 x0
 -- REG3UP:
 --     add  x3 x3 x1
---     bgeu x3 x4 REG2UP
---     jal  REG3UP
+--     bgeu x3 x4 -12 : REG2UP
+--     jal x0 -8 : REG3UP
 architecture behavioral of instr_memory is
   signal store : ram_t :=
     (
-      x"00100093", x"00000133", x"000001b3", x"7ff00213", x"00522213", x"00110133", x"000001b3", x"001181b3", x"fe41fae3", x"ff9ff0ef", others => (others => '0')
+      x"00100093", x"00000133", x"000001b3", x"7ff00213", x"00110133", x"000001b3", x"001181b3", x"fe41fae3", x"ff9ff06f", others => (others => '0')
       );
 begin
 

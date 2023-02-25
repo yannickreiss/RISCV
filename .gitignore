@@ -8,3 +8,5 @@ test-B-type
 ripestohex.py
 ggt.S
 constrainits.xdc
+cpu_tb
+*_tb
