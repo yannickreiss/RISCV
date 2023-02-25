@@ -30,7 +30,8 @@ entity registers is
         write_enable : in  one_bit;     -- enable writing to wr_idx
         r1_out       : out word;        -- data from first register
         r2_out       : out word;        -- data from second register
-        led_out      : out word         -- output reg 2 to led
+        led_out      : out word;        -- output reg 2 to led
+        reset        : in  std_logic    -- reset
         );
 end registers;
 
@@ -43,10 +44,14 @@ begin
     process (clk)                       -- runs only, when clk changed
     begin
         if rising_edge(clk) then
-            -- check if write is enabled
-            if to_integer(unsigned(write_enable)) = 1 then
-                -- write data_in to wr_idx
-                registerbench(to_integer(unsigned(wr_idx))) <= data_in;
+            if reset = '1' then
+                -- check if write is enabled
+                if to_integer(unsigned(write_enable)) = 1 then
+                    -- write data_in to wr_idx
+                    registerbench(to_integer(unsigned(wr_idx))) <= data_in;
+                end if;
+            else
+                registerbench <= initRegs;
             end if;
             registerbench(0) <= std_logic_vector(to_unsigned(0, wordWidth));
         end if;

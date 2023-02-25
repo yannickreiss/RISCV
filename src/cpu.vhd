@@ -13,6 +13,7 @@ use work.riscv_types.all;
 entity cpu is
   port(
     clk : in std_logic;                 -- clk to control the unit
+    reset : in std_logic;               -- reset pc to zero
 
     -- Led Output
     led : out std_logic_vector(15 downto 0);  -- output to 16 LEDS
@@ -32,6 +33,7 @@ architecture implementation of cpu is
       en_pc     : in  one_bit;          -- activates PC
       addr_calc : in  ram_addr_t;       -- Address from ALU
       doJump    : in  one_bit;          -- Jump to Address
+      reset     : in  std_logic;        -- rest
       addr      : out ram_addr_t        -- Address to Decoder
       );
   end component;
@@ -86,7 +88,8 @@ architecture implementation of cpu is
       write_enable : in  one_bit;       -- enable writing to wr_idx
       r1_out       : out word;          -- data from first register
       r2_out       : out word;          -- data from second register
-      led_out      : out word           -- output led
+      led_out      : out word;          -- output led
+      reset        : in  std_logic      -- reset
       );
   end component;
 
@@ -150,8 +153,7 @@ architecture implementation of cpu is
   -- ???   -> alu
   signal X_addr_calc : ram_addr_t;
 
-  -- Clock signals 
-  signal reset : std_logic;
+  -- Clock signals
   signal locked : std_logic;
 
 -------------------------
@@ -189,7 +191,8 @@ begin
       write_enable => s_reg_wr_enable,
       r1_out       => s_reg_data1,
       r2_out       => s_reg_data2,
-      led_out      => s_led_out
+      led_out      => s_led_out,
+      reset        => reset
       );
 
   imm_RISCV : imm
@@ -205,6 +208,7 @@ begin
       en_pc     => s_pc_enable,
       addr_calc => X_addr_calc,
       doJump    => s_pc_jump_enable,
+      reset     => reset,
       addr      => s_instAdr
       );
 
@@ -244,7 +248,8 @@ begin
   -- Output
   -----------------------------------------
   led  <= s_led_out(15 downto 0);
-  RGB1 <= s_clock & s_clock & s_clock;
+  RGB1 <= s_led_out(18 downto 16);
+  RGB2 <= s_led_out(21 downto 19);
 
   alu_control : process (s_immediate, s_opcode, s_reg_data1, s_reg_data2)  -- runs only, when item in list changed
   begin
@@ -343,15 +348,10 @@ begin
     if rising_edge(s_clock) then
       case s_cycle_cnt is
         when stIF => s_cycle_cnt <= stDEC;
-                     RGB2 <= "001";
         when stDEC => s_cycle_cnt <= stOF;
-                      RGB2 <= "010";
         when stOF => s_cycle_cnt <= stEXEC;
-                     RGB2 <= "011";
         when stEXEC => s_cycle_cnt <= stWB;
-                       RGB2 <= "100";
         when others => s_cycle_cnt <= stIF;
-                       RGB2 <= "101";
       end case;
     end if;
   end process pc_cycle_control;

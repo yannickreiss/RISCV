@@ -15,6 +15,7 @@ entity pc is
         en_pc     : in  one_bit;        -- activates PC
         addr_calc : in  ram_addr_t;     -- Address from ALU
         doJump    : in  one_bit;        -- Jump to Address
+        reset     : in  std_logic;          -- reset pc
         addr      : out ram_addr_t      -- Address to Decoder
     );
 
@@ -36,6 +37,9 @@ begin
         else
             addr_out <= addr_out_plus;
         end if;
+      end if;
+      if reset = '1' then
+        addr_out <= (others => '0');
       end if;
     end if;
   end process;
