@@ -21,14 +21,20 @@ entity ram is
 
     dataIn      : in  word;             -- Write data
     instruction : out word;             -- Get instruction
-    dataOut     : out word              -- Read data
+    dataOut     : out word;             -- Read data
+
+    switch : in std_logic_vector(15 downto 0);  -- switch inputs directly written into storage
+    button : in std_logic_vector(4 downto 0);  -- button inputs directly written into storage
+
+    led     : out std_logic_vector(15 downto 0);
+    segment : out std_logic_vector(31 downto 0);
+    rgb     : out std_logic_vector(7 downto 0)
     );
 end ram;
 
 -- Architecture behavioral of ram: control different ram blocks
 architecture behavioral of ram is
   -- write signals
-  signal wr1 : one_bit := "0";
   signal wr2 : one_bit := "0";
   signal wr3 : one_bit := "0";
   signal wr4 : one_bit := "0";
@@ -51,7 +57,7 @@ begin
     port map (
       clk          => clk,
       addr_a       => instructionAdr(ram_addr_size - 3 downto 0),
-      write_b      => wr1,
+      write_b      => "0",
       addr_b       => dataAdr(ram_addr_size - 3 downto 0),
       data_write_b => dataIn,
 
@@ -71,7 +77,7 @@ begin
       data_read_b => data2
       );
 
-  block3 : entity work.ram_block(behavioral)
+  block3 : entity work.io_ram(behavioral)
     port map (
       clk          => clk,
       addr_a       => instructionAdr(9 downto 0),
@@ -80,7 +86,14 @@ begin
       data_write_b => dataIn,
 
       data_read_a => inst3,
-      data_read_b => data3
+      data_read_b => data3,
+
+      switch => switch,
+      button => button,
+
+      led     => led,
+      segment => segment,
+      rgb     => rgb
       );
 
   block4 : entity work.ram_block(behavioral)
@@ -102,27 +115,22 @@ begin
     -- enable write
     case dataAdr(11 downto 10) is
       when "00" =>
-        wr1 <= writeEnable;
         wr2 <= "0";
         wr3 <= "0";
         wr4 <= "0";
       when "01" =>
-        wr1 <= "0";
         wr2 <= writeEnable;
         wr3 <= "0";
         wr4 <= "0";
       when "10" =>
-        wr1 <= "0";
         wr2 <= "0";
         wr3 <= writeEnable;
         wr4 <= "0";
       when "11" =>
-        wr1 <= "0";
         wr2 <= "0";
         wr3 <= "0";
         wr4 <= writeEnable;
       when others =>
-        wr1 <= "0";
         wr2 <= "0";
         wr3 <= "0";
         wr4 <= "0";

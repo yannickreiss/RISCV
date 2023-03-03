@@ -23,12 +23,26 @@ architecture Behavioral of cpu_tb is
   -- Clock period definitions
   constant clk_period : time := 10 ns;
 
+  -- peripherie
+  signal s_switch  : std_logic_vector(15 downto 0) := (others => '0');
+  signal s_button  : std_logic_vector(4 downto 0)  := (others => '0');
+  signal s_led     : std_logic_vector(15 downto 0) := (others => '0');
+  signal s_segment : std_logic_vector(31 downto 0) := (others => '0');
+  signal s_rgb     : std_logic_vector(7 downto 0)  := (others => '0');
+
 begin
 
   -- Instantiate the Unit Under Test (UUT)
   uut : entity work.cpu(implementation)
     port map (clk   => clk,
-              reset => reset);
+              reset => reset,
+
+              switch  => s_switch,
+              button  => s_button,
+              led     => s_led,
+              segment => s_segment,
+              rgb     => s_rgb
+              );
 
   -- Clock process definitions
   clk_process : process

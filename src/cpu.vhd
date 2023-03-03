@@ -12,15 +12,15 @@ use work.riscv_types.all;
 -- Entity cpu: path implementation of RISC-V cpu
 entity cpu is
   port(
-    clk : in std_logic;                 -- clk to control the unit
+    clk   : in std_logic;               -- clk to control the unit
     reset : in std_logic;               -- reset pc to zero
 
-    -- Led Output
-    led : out std_logic_vector(15 downto 0);  -- output to 16 LEDS
+    switch : in std_logic_vector(15 downto 0);
+    button : in std_logic_vector(4 downto 0);
 
-    -- RGB Output
-    RGB1 : out std_logic_vector(2 downto 0);  -- output to RGB 1
-    RGB2 : out std_logic_vector(2 downto 0)   -- output to RGB 2
+    led     : out std_logic_vector(15 downto 0);
+    segment : out std_logic_vector(31 downto 0);
+    rgb     : out std_logic_vector(7 downto 0)
     );
 end cpu;
 
@@ -46,7 +46,14 @@ architecture implementation of cpu is
       writeEnable    : in  one_bit;     -- Read or write mode
       dataIn         : in  word;        -- Write data
       instruction    : out word;        -- Get instruction
-      dataOut        : out word         -- Read data
+      dataOut        : out word;        -- Read data
+
+      switch : in std_logic_vector(15 downto 0);
+      button : in std_logic_vector(4 downto 0);
+
+      led     : out std_logic_vector(15 downto 0);
+      segment : out std_logic_vector(31 downto 0);
+      rgb     : out std_logic_vector(7 downto 0)
       );
   end component;
 
@@ -228,7 +235,13 @@ begin
       writeEnable    => s_ram_enable,    --
       dataIn         => s_reg_data2,     -- data from register
       instruction    => s_inst,          --
-      dataOut        => s_ram_data
+      dataOut        => s_ram_data,
+
+      switch  => switch,
+      button  => button,
+      led     => led,
+      segment => segment,
+      rgb     => rgb
       );
 
   branch_RISCV : Branch
@@ -247,9 +260,6 @@ begin
   -----------------------------------------
   -- Output
   -----------------------------------------
-  led  <= s_led_out(15 downto 0);
-  RGB1 <= s_led_out(18 downto 16);
-  RGB2 <= s_led_out(21 downto 19);
 
   alu_control : process (s_immediate, s_opcode, s_reg_data1, s_reg_data2)  -- runs only, when item in list changed
   begin
@@ -347,9 +357,9 @@ begin
   begin
     if rising_edge(s_clock) then
       case s_cycle_cnt is
-        when stIF => s_cycle_cnt <= stDEC;
-        when stDEC => s_cycle_cnt <= stOF;
-        when stOF => s_cycle_cnt <= stEXEC;
+        when stIF   => s_cycle_cnt <= stDEC;
+        when stDEC  => s_cycle_cnt <= stOF;
+        when stOF   => s_cycle_cnt <= stEXEC;
         when stEXEC => s_cycle_cnt <= stWB;
         when others => s_cycle_cnt <= stIF;
       end case;
