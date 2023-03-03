@@ -19,10 +19,15 @@ The [original repository](https://gitlab.cs.hs-rm.de/yreis001/hbs) will not be u
 
 ## Building Requirements ##
 
+To build and simulate the processor, you need:
+
 - make
 - ghdl
 
----
+To program the processor onto a FPGA:
+
+- Vivado for Xilinx
+- Another Tool depending on your FPGA-Board
 
 ## Build Instructions ##
 
