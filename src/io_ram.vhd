@@ -50,7 +50,11 @@ begin
 
             -- One synchron write port
             if write_b = "1" then
-                store(to_integer(unsigned(addr_b(9 downto 2)))) <= data_write_b;
+                -- if unsigned(addr_b(9 downto 2)) < 128 then 
+                    store(128) <= switch(15 downto 0) & button(4 downto 0) & "00000000000";  -- TODO: Check constraints                    
+                -- else 
+                    store(to_integer(unsigned(addr_b(9 downto 2)))) <= data_write_b;
+                -- end if;
             end if;
 
         end if;
@@ -59,8 +63,6 @@ begin
     -- Two synchron read ports 
     data_read_a <= store(to_integer(unsigned(addr_a(9 downto 2))));
     data_read_b <= store(to_integer(unsigned(addr_b(9 downto 2))));
-
-    store(128) <= switch(15 downto 0) & button(4 downto 0) & "00000000000";  -- TODO: Check constraints
 
     led     <= store(0)(31 downto 16);
     segment <= store(1);

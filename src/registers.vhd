@@ -44,21 +44,21 @@ begin
     process (clk)                       -- runs only, when clk changed
     begin
         if rising_edge(clk) then
-            if reset = '0' then
+            -- if reset = '1' then
                 -- check if write is enabled
                 if to_integer(unsigned(write_enable)) = 1 then
                     -- write data_in to wr_idx
                     registerbench(to_integer(unsigned(wr_idx))) <= data_in;
                 end if;
-            else
-                registerbench <= initRegs;
-            end if;
+            -- else
+            --     registerbench <= initRegs;
+            -- end if;
             registerbench(0) <= std_logic_vector(to_unsigned(0, wordWidth));
         end if;
     end process;
     -- read from both reading registers
     r1_out  <= registerbench(to_integer(unsigned(r1_idx)));
     r2_out  <= registerbench(to_integer(unsigned(r2_idx)));
-    led_out <= registerbench(2);
+    led_out <= registerbench(5);
 
 end structure;

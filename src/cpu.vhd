@@ -15,17 +15,21 @@ entity cpu is
     clk   : in std_logic;               -- clk to control the unit
     reset : in std_logic;               -- reset pc to zero
 
-    switch : in std_logic_vector(15 downto 0);
-    button : in std_logic_vector(4 downto 0);
+    sw : in std_logic_vector(15 downto 0);
+    -- button : in std_logic_vector(4 downto 0);
 
     led     : out std_logic_vector(15 downto 0);
-    segment : out std_logic_vector(31 downto 0);
-    rgb     : out std_logic_vector(7 downto 0)
+    -- segment : out std_logic_vector(31 downto 0);
+    rgb     : out std_logic_vector(5 downto 0)
     );
 end cpu;
 
 -- Architecture implementation of c: control and connect different parts of cpu
 architecture implementation of cpu is
+
+  signal button : std_logic_vector(4 downto 0) := "00000";
+  signal segment : std_logic_vector(31 downto 0);
+  signal s_rgb : std_logic_Vector(7 downto 0);
 
   component pc
     port(
@@ -237,11 +241,11 @@ begin
       instruction    => s_inst,          --
       dataOut        => s_ram_data,
 
-      switch  => switch,
+      switch  => sw,
       button  => button,
       led     => led,
       segment => segment,
-      rgb     => rgb
+      rgb     => s_rgb
       );
 
   branch_RISCV : Branch
@@ -313,7 +317,7 @@ begin
   end process;
 
   -- Process pc input 
-  pc_addr_input : process(s_opcode, s_cycle_cnt, s_instAdr, s_immediate)
+  pc_addr_input : process(s_opcode, s_cycle_cnt, s_instAdr, s_immediate, s_branch_jump_enable)
   begin
     if s_cycle_cnt = stWB then
       s_pc_enable <= "1";
@@ -339,7 +343,7 @@ begin
   end process;
 
   -- process ram 
-  ram_input : process(s_opcode, s_cycle_cnt)
+  ram_input : process(s_opcode, s_cycle_cnt, s_immediate, s_reg_data1)
   begin
     s_data_in_addr <= std_logic_vector(signed(s_immediate(11 downto 0)) + signed(s_reg_data1(11 downto 0)));
     if s_cycle_cnt = stWB then
@@ -365,5 +369,7 @@ begin
       end case;
     end if;
   end process pc_cycle_control;
+  
+  rgb <= s_rgb(5 downto 0);
 
 end implementation;
